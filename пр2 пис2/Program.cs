@@ -1,12 +1,14 @@
 ﻿using пр2_пис2;
 
-Console.WriteLine("Внимание: для треугольника нужно 3 точки");
+Console.WriteLine("Внимание: для треугольника нужно 3 точки, для прямоугольника - 4 точки");
 
 List<Point2D> points = ReadPoints();
 
 var triangles = CreateTriangles(points);
+var rectangles = CreateRectangles(points);
 
-PrintResults(triangles, points);
+PrintResults(triangles, rectangles, points);
+SaveToFile(triangles, rectangles);
 
 static List<Point2D> ReadPoints()
 {
@@ -60,7 +62,19 @@ static List<Triangle> CreateTriangles(List<Point2D> points)
     return triangles;
 }
 
-static void PrintResults(List<Triangle> triangles, List<Point2D> points)
+static List<Rectangle> CreateRectangles(List<Point2D> points)
+{
+    var rectangles = new List<Rectangle>();
+
+    for (int i = 0; i <= points.Count - 4; i += 4)
+    {
+        rectangles.Add(new Rectangle(points[i], points[i + 1], points[i + 2], points[i + 3]));
+    }
+
+    return rectangles;
+}
+
+static void PrintResults(List<Triangle> triangles, List<Rectangle> rectangles, List<Point2D> points)
 {
     Console.WriteLine("\nТреугольники:");
     foreach (var triangle in triangles)
@@ -68,7 +82,13 @@ static void PrintResults(List<Triangle> triangles, List<Point2D> points)
         Console.WriteLine(triangle);
     }
 
-    int usedPoints = triangles.Count * 3;
+    Console.WriteLine("\nПрямоугольники:");
+    foreach (var rectangle in rectangles)
+    {
+        Console.WriteLine(rectangle);
+    }
+
+    int usedPoints = triangles.Count * 3 + rectangles.Count * 4;
     if (points.Count > usedPoints)
     {
         Console.WriteLine("\nЛишние точки:");
@@ -77,4 +97,23 @@ static void PrintResults(List<Triangle> triangles, List<Point2D> points)
             Console.WriteLine(points[i]);
         }
     }
+}
+static void SaveToFile(List<Triangle> triangles, List<Rectangle> rectangles)
+{
+    File.WriteAllText("results.txt", "");
+
+    using var writer = new StreamWriter("results.txt");
+    writer.WriteLine("Треугольники:");
+    foreach (var triangle in triangles)
+    {
+        writer.WriteLine(triangle);
+    }
+
+    writer.WriteLine("\nПрямоугольники:");
+    foreach (var rectangle in rectangles)
+    {
+        writer.WriteLine(rectangle);
+    }
+
+    Console.WriteLine("Результаты сохранены в results.txt");
 }
