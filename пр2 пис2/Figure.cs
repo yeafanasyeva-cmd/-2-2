@@ -6,7 +6,11 @@ using System.Threading.Tasks;
 
 namespace пр2_пис2
 {
-    internal class Figure
+    abstract class Figure
     {
+        public virtual string Draw()
+        {
+            return "";
+        }
     }
 }

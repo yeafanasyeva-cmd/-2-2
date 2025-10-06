@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace пр2_пис2
 {
-    internal class Triangle
+    internal class Triangle : Figure
     {
         public Point2D A { get; }
         public Point2D B { get; }
@@ -20,6 +20,10 @@ namespace пр2_пис2
             C = c;
         }
         public override string ToString()
+        {
+            return $"[A: {A}, B: {B}, C: {C}]";
+        }
+        public override string Draw()
         {
             return $"[A: {A}, B: {B}, C: {C}]";
         }

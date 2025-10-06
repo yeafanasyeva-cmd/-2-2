@@ -24,7 +24,7 @@ namespace пр2_пис2
             return A.PointColor == B.PointColor && B.PointColor == C.PointColor;
         }
 
-        public override string ToString()
+        public override string Draw()
         {
             string colorInfo = HasUniformColor() ? " (одноцветный)" : " (разноцветный)";
             return $"[Цветной треугольник: {Description}{colorInfo}, A: {A}, B: {B}, C: {C}]";
