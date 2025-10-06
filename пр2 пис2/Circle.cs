@@ -8,5 +8,10 @@ namespace пр2_пис2
 {
     internal class Circle
     {
+        public Point2D A { get; }
+        public Circle(Point2D p)
+        {
+            A = p;
+        }
     }
 }
