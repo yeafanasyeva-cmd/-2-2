@@ -10,6 +10,7 @@ namespace пр2_пис2
     {
         public string Description { get; }
         public bool IsVisible { get; }
+        public bool IsActive { get; set; } = false;
 
         public ColoredTriangle(Point2D a, Point2D b, Point2D c, string description)
             : base(a, b, c)

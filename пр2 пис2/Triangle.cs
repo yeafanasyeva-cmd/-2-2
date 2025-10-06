@@ -11,6 +11,7 @@ namespace пр2_пис2
         public Point2D A { get; }
         public Point2D B { get; }
         public Point2D C { get; }
+        public bool IsActive { get; set; } = false;
 
         public Triangle(Point2D a, Point2D b, Point2D c)
         {
@@ -18,7 +19,6 @@ namespace пр2_пис2
             B = b;
             C = c;
         }
-
         public override string ToString()
         {
             return $"[A: {A}, B: {B}, C: {C}]";

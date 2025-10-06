@@ -19,6 +19,7 @@ namespace пр2_пис2
         public double X { get; }
         public double Y { get; }
         public Color PointColor { get; }
+        public bool IsActive { get; set; } = true;
 
         public Point2D(double x, double y, Color color)
         {
