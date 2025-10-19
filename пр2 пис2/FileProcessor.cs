@@ -11,11 +11,6 @@ namespace пр2_пис2
     {
         public static List<Point2D> ReadPointsFromFile(string filePath)
         {
-            if (!File.Exists(filePath))
-            {
-                throw new FileNotFoundException($"Файл не найден: {filePath}");
-            }
-
             var points = new List<Point2D>();
             string[] lines = File.ReadAllLines(filePath);
 
@@ -26,7 +21,7 @@ namespace пр2_пис2
 
                 try
                 {
-                    points.Add(CreatePointFromInput(line));
+                    points.Add(PointCreator.CreatePointFromString(line));
                 }
                 catch (Exception ex)
                 {
@@ -37,57 +32,40 @@ namespace пр2_пис2
             return points;
         }
 
-        public static void SaveTrianglesToFile(List<Triangle> triangles, string filePath)
+        public static void SaveFiguresToFile(List<Triangle> triangles, List<Rectangle> rectangles, List<Circle> circles, string filePath)
         {
             using var writer = new StreamWriter(filePath);
-            writer.WriteLine($"Количество треугольников: {triangles.Count}");
-            writer.WriteLine("Созданные треугольники:");
 
-            for (int i = 0; i < triangles.Count; i++)
+            if (triangles.Count > 0)
             {
-                writer.WriteLine($"Треугольник {i + 1}: {triangles[i]}");
-            }
-        }
-
-        public static void SaveRectanglesToFile(List<Rectangle> rectangles, string filePath)
-        {
-            using var writer = new StreamWriter(filePath);
-            writer.WriteLine($"Количество прямоугольников: {rectangles.Count}");
-            writer.WriteLine("Созданные прямоугольники:");
-
-            foreach (var rectangle in rectangles)
-            {
-                writer.WriteLine(rectangle.ToString());
-            }
-        }
-
-        private static Point2D CreatePointFromInput(string input)
-        {
-            string[] parts = input.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-
-            if (parts.Length < 3)
-            {
-                throw new ArgumentException("Неверный формат ввода. Ожидается: x y цвет");
+                writer.WriteLine($"Количество треугольников: {triangles.Count}");
+                writer.WriteLine("Треугольники:");
+                for (int i = 0; i < triangles.Count; i++)
+                {
+                    writer.WriteLine($"Треугольник {i + 1}: {triangles[i]}");
+                }
+                writer.WriteLine();
             }
 
-            double x = double.Parse(parts[0]);
-            double y = double.Parse(parts[1]);
-            Point2D.Color color = ParseColor(parts[2]);
-
-            return new Point2D(x, y, color);
-        }
-
-        private static Point2D.Color ParseColor(string colorString)
-        {
-            string lowerColor = colorString.ToLower();
-
-            switch (lowerColor)
+            if (rectangles.Count > 0)
             {
-                case "red": return Point2D.Color.Red;
-                case "green": return Point2D.Color.Green;
-                case "blue": return Point2D.Color.Blue;
-                case "light_blue": return Point2D.Color.LightBlue;
-                default: return Point2D.Color.Blue;
+                writer.WriteLine($"Количество прямоугольников: {rectangles.Count}");
+                writer.WriteLine("Прямоугольники:");
+                foreach (var rectangle in rectangles)
+                {
+                    writer.WriteLine(rectangle.ToString());
+                }
+                writer.WriteLine();
+            }
+
+            if (circles.Count > 0)
+            {
+                writer.WriteLine($"Количество кругов: {circles.Count}");
+                writer.WriteLine("Круги:");
+                foreach (var circle in circles)
+                {
+                    writer.WriteLine(circle.Draw());
+                }
             }
         }
     }

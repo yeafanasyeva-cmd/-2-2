@@ -1,119 +1,160 @@
 ﻿using пр2_пис2;
 
-Console.WriteLine("Внимание: для треугольника нужно 3 точки, для прямоугольника - 4 точки");
+Console.WriteLine("Программа для создания фигур из точек");
 
-List<Point2D> points = ReadPoints();
+try
+{
+    List<Point2D> points = ReadPoints();
 
-var triangles = CreateTriangles(points);
-var rectangles = CreateRectangles(points);
+    var triangles = new List<Triangle>();
+    var rectangles = new List<Rectangle>();
+    var circles = new List<Circle>();
 
-PrintResults(triangles, rectangles, points);
-SaveToFile(triangles, rectangles);
+    AskUserForFigureCreation(points, triangles, rectangles, circles);
+    PrintResults(triangles, rectangles, circles, points);
+    SaveToFile(triangles, rectangles, circles);
+}
+catch (Exception ex)
+{
+    Console.WriteLine($"Ошибка: {ex.Message}");
+}
 
 static List<Point2D> ReadPoints()
 {
     Console.Write("Введите количество точек: ");
     int count = int.Parse(Console.ReadLine());
+    InputValidator.ValidatePointCount(count);
 
     var points = new List<Point2D>();
 
     for (int i = 0; i < count; i++)
     {
         Console.Write($"Точка {i + 1} (x y цвет): ");
-        string input = Console.ReadLine();
-        points.Add(CreatePoint(input));
+        string pointInput = Console.ReadLine();
+
+        try
+        {
+            points.Add(PointCreator.CreatePointFromString(pointInput));
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Ошибка: {ex.Message}. Попробуйте еще раз:");
+            i--;
+        }
     }
 
     return points;
 }
 
-static Point2D CreatePoint(string input)
+static void AskUserForFigureCreation(List<Point2D> points, List<Triangle> triangles, List<Rectangle> rectangles, List<Circle> circles)
 {
-    string[] parts = input.Split(' ');
+    Console.WriteLine($"\nУ вас {points.Count} точек. Во что преобразовать?");
+    Console.WriteLine("1 - Треугольники (по 3 точки на треугольник)");
+    Console.WriteLine("2 - Прямоугольники (по 4 точки на прямоугольник)");
+    Console.WriteLine("3 - Круги (по 1 точке на круг)");
+    Console.WriteLine("4 - Автоматически (треугольники + прямоугольники + круги из остатков)");
+    Console.Write("Выберите вариант: ");
 
-    double x = double.Parse(parts[0]);
-    double y = double.Parse(parts[1]);
-    Point2D.Color color = ParseColor(parts[2]);
+    string choice = Console.ReadLine();
 
-    return new Point2D(x, y, color);
-}
-
-static Point2D.Color ParseColor(string colorString)
-{
-    switch (colorString.ToLower())
+    switch (choice)
     {
-        case "red": return Point2D.Color.Red;
-        case "green": return Point2D.Color.Green;
-        case "blue": return Point2D.Color.Blue;
-        case "light_blue": return Point2D.Color.LightBlue;
-        default: return Point2D.Color.Blue;
+        case "1":
+            triangles.AddRange(GeometryHelper.CreateTriangles(points));
+            Console.WriteLine($"Создано {triangles.Count} треугольников");
+            break;
+
+        case "2":
+            rectangles.AddRange(GeometryHelper.CreateRectangles(points));
+            Console.WriteLine($"Создано {rectangles.Count} прямоугольников");
+            break;
+
+        case "3":
+            foreach (var point in points)
+            {
+                circles.Add(new Circle(point));
+            }
+            Console.WriteLine($"Создано {circles.Count} кругов");
+            break;
+
+        case "4":
+        default:
+            triangles.AddRange(GeometryHelper.CreateTriangles(points));
+
+            int pointsAfterTriangles = triangles.Count * 3;
+            if (points.Count - pointsAfterTriangles >= 4)
+            {
+                var newRectangles = GeometryHelper.CreateRectangles(points, pointsAfterTriangles);
+                rectangles.AddRange(newRectangles);
+                Console.WriteLine($"Создано {triangles.Count} треугольников и {rectangles.Count} прямоугольников");
+            }
+            else
+            {
+                Console.WriteLine($"Создано {triangles.Count} треугольников (для прямоугольников не хватило точек)");
+            }
+
+            int usedPoints = triangles.Count * 3 + rectangles.Count * 4;
+            if (points.Count > usedPoints)
+            {
+                Console.WriteLine($"\nОсталось {points.Count - usedPoints} неиспользованных точек.");
+                Console.Write("Преобразовать их в круги? (y/n): ");
+
+                string answer = Console.ReadLine().ToLower();
+                if (answer == "y" || answer == "yes" || answer == "д" || answer == "да")
+                {
+                    for (int i = usedPoints; i < points.Count; i++)
+                    {
+                        circles.Add(new Circle(points[i]));
+                    }
+                    Console.WriteLine($"Создано дополнительно {circles.Count} кругов");
+                }
+            }
+            break;
     }
 }
 
-static List<Triangle> CreateTriangles(List<Point2D> points)
+static void PrintResults(List<Triangle> triangles, List<Rectangle> rectangles, List<Circle> circles, List<Point2D> points)
 {
-    var triangles = new List<Triangle>();
-
-    for (int i = 0; i <= points.Count - 3; i += 3)
+    if (triangles.Count > 0)
     {
-        triangles.Add(new Triangle(points[i], points[i + 1], points[i + 2]));
+        Console.WriteLine("\n=== ТРЕУГОЛЬНИКИ ===");
+        foreach (var triangle in triangles)
+        {
+            Console.WriteLine(triangle);
+        }
     }
 
-    return triangles;
-}
-
-static List<Rectangle> CreateRectangles(List<Point2D> points)
-{
-    var rectangles = new List<Rectangle>();
-
-    for (int i = 0; i <= points.Count - 4; i += 4)
+    if (rectangles.Count > 0)
     {
-        rectangles.Add(new Rectangle(points[i], points[i + 1], points[i + 2], points[i + 3]));
+        Console.WriteLine("\n=== ПРЯМОУГОЛЬНИКИ ===");
+        foreach (var rectangle in rectangles)
+        {
+            Console.WriteLine(rectangle);
+        }
     }
 
-    return rectangles;
-}
-
-static void PrintResults(List<Triangle> triangles, List<Rectangle> rectangles, List<Point2D> points)
-{
-    Console.WriteLine("\nТреугольники:");
-    foreach (var triangle in triangles)
+    if (circles.Count > 0)
     {
-        Console.WriteLine(triangle);
+        Console.WriteLine("\n=== КРУГИ ===");
+        foreach (var circle in circles)
+        {
+            Console.WriteLine(circle.Draw());
+        }
     }
 
-    Console.WriteLine("\nПрямоугольники:");
-    foreach (var rectangle in rectangles)
-    {
-        Console.WriteLine(rectangle);
-    }
-
-    int usedPoints = triangles.Count * 3 + rectangles.Count * 4;
+    int usedPoints = GeometryHelper.CalculateUsedPoints(triangles.Count, rectangles.Count, circles.Count);
     if (points.Count > usedPoints)
     {
-        Console.WriteLine("\nЛишние точки:");
+        Console.WriteLine("\n=== НЕИСПОЛЬЗОВАННЫЕ ТОЧКИ ===");
         for (int i = usedPoints; i < points.Count; i++)
         {
             Console.WriteLine(points[i]);
         }
     }
 }
-static void SaveToFile(List<Triangle> triangles, List<Rectangle> rectangles)
+
+static void SaveToFile(List<Triangle> triangles, List<Rectangle> rectangles, List<Circle> circles)
 {
-    File.WriteAllText("results.txt", "");
-
-    using var writer = new StreamWriter("results.txt");
-    writer.WriteLine("Треугольники:");
-    foreach (var triangle in triangles)
-    {
-        writer.WriteLine(triangle);
-    }
-
-    writer.WriteLine("\nПрямоугольники:");
-    foreach (var rectangle in rectangles)
-    {
-        writer.WriteLine(rectangle);
-    }
-
-    Console.WriteLine("Результаты сохранены в results.txt");
+    FileProcessor.SaveFiguresToFile(triangles, rectangles, circles, "results.txt");
+    Console.WriteLine("\nРезультаты сохранены в results.txt");
 }
