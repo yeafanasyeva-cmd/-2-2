@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace пр2_пис2
 {
-    internal class ColorParser
+    public class ColorParser
     {
         public static Point2D.Color ParseColor(string colorString)
         {

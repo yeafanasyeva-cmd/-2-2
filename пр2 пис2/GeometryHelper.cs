@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace пр2_пис2
 {
-    internal class GeometryHelper //слой с геометрич действиями
+    public class GeometryHelper //слой с геометрич действиями
     {
         public static List<Triangle> CreateTriangles(List<Point2D> points, int startIndex = 0)
         {

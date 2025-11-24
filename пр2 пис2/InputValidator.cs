@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace пр2_пис2
 {
-    internal class InputValidator
+    public class InputValidator
     {
         public static void ValidateFilePath(string filePath)
         {

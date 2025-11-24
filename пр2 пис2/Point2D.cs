@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace пр2_пис2
 {
-    internal class Point2D
+    public class Point2D
     {
         public enum Color
         {

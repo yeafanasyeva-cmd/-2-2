@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace пр2_пис2
 {
-    internal class PointCreator
+    public class PointCreator
     {
         public static Point2D CreatePointFromString(string input)
         {

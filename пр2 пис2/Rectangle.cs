@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace пр2_пис2
 {
-    internal class Rectangle : Figure
+    public class Rectangle : Figure
     {
         public Point2D Point1 { get; }
         public Point2D Point2 { get; }
@@ -25,6 +25,26 @@ namespace пр2_пис2
         public override string Draw()
         {
             return $"Прямоугольник: {Point1}, {Point2}, {Point3}, {Point4}";
+        }
+
+        public override string GetFigureType()
+        {
+            return "Прямоугольник";
+        }
+
+        public override int GetPointCount()
+        {
+            return 4;
+        }
+
+        public override List<Point2D> GetPoints()
+        {
+            return new List<Point2D> { Point1, Point2, Point3, Point4 };
+        }
+
+        public override string ToString()
+        {
+            return Draw();
         }
     }
 }

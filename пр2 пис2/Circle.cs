@@ -6,16 +6,33 @@ using System.Threading.Tasks;
 
 namespace пр2_пис2
 {
-    internal class Circle : Figure
+    public class Circle : Figure
     {
-        public Point2D A { get; }
-        public Circle(Point2D p)
+        public Point2D Center { get; }
+
+        public Circle(Point2D center)
         {
-            A = p;
+            Center = center;
         }
         public override string Draw()
         {
-            return "Центр круга - {A}";
+            return $"Круг: Центр - {Center}";
+        }
+        public override string GetFigureType()
+        {
+            return "Круг";
+        }
+        public override int GetPointCount()
+        {
+            return 1;
+        }
+        public override List<Point2D> GetPoints()
+        {
+            return new List<Point2D> { Center };
+        }
+        public override string ToString()
+        {
+            return Draw();
         }
     }
 }

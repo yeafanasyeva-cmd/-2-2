@@ -32,15 +32,15 @@ static List<Point2D> ReadPoints()
         Console.Write($"Точка {i + 1} (x y цвет): ");
         string pointInput = Console.ReadLine();
 
-        try
-        {
-            points.Add(PointCreator.CreatePointFromString(pointInput));
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Ошибка: {ex.Message}. Попробуйте еще раз:");
-            i--;
-        }
+            try
+            {
+                points.Add(PointCreator.CreatePointFromString(pointInput));
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Ошибка: {ex.Message}. Попробуйте еще раз:");
+                i--;
+            }   
     }
 
     return points;

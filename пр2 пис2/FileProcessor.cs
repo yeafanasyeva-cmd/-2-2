@@ -7,7 +7,7 @@ using пр2_пис2;
 
 namespace пр2_пис2
 {
-    internal class FileProcessor
+    public class FileProcessor
     {
         public static List<Point2D> ReadPointsFromFile(string filePath)
         {
@@ -32,40 +32,20 @@ namespace пр2_пис2
             return points;
         }
 
-        public static void SaveFiguresToFile(List<Triangle> triangles, List<Rectangle> rectangles, List<Circle> circles, string filePath)
+        public static void SaveFiguresToFile(List<Figure> figures, string filePath)
         {
             using var writer = new StreamWriter(filePath);
 
-            if (triangles.Count > 0)
-            {
-                writer.WriteLine($"Количество треугольников: {triangles.Count}");
-                writer.WriteLine("Треугольники:");
-                for (int i = 0; i < triangles.Count; i++)
-                {
-                    writer.WriteLine($"Треугольник {i + 1}: {triangles[i]}");
-                }
-                writer.WriteLine();
-            }
+            var triangles = figures.OfType<Triangle>().ToList();
+            var rectangles = figures.OfType<Rectangle>().ToList();
+            var circles = figures.OfType<Circle>().ToList();
+            var coloredTriangles = figures.OfType<ColoredTriangle>().ToList();
 
-            if (rectangles.Count > 0)
+            foreach (var f in figures)
             {
-                writer.WriteLine($"Количество прямоугольников: {rectangles.Count}");
-                writer.WriteLine("Прямоугольники:");
-                foreach (var rectangle in rectangles)
-                {
-                    writer.WriteLine(rectangle.ToString());
-                }
-                writer.WriteLine();
+                writer.WriteLine(f.Draw());
             }
-
-            if (circles.Count > 0)
-            {
-                writer.WriteLine($"Количество кругов: {circles.Count}");
-                writer.WriteLine("Круги:");
-                foreach (var circle in circles)
-                {
-                    writer.WriteLine(circle.Draw());
-                }
+            writer.WriteLine();
             }
         }
     }

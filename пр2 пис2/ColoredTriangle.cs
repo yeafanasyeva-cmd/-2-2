@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace пр2_пис2
 {
-    internal class ColoredTriangle : Triangle
+    public class ColoredTriangle : Triangle
     {
         public string Description { get; }
         public bool IsVisible { get; }
